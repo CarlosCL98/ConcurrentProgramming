@@ -12,7 +12,7 @@ public class Immortal extends Thread {
 
 	private int defaultDamageValue;
 
-	private final List<Immortal> immortalsPopulation;
+	private List<Immortal> immortalsPopulation;
 
 	private final String name;
 
@@ -73,29 +73,32 @@ public class Immortal extends Thread {
 
 	public void fight(Immortal i2) {
 		if (i2.getHealth() > 0) {
-			if (bloqueadoPor != i2) {
-				synchronized (this) {
-					synchronized (i2) {
-						i2.setBloqueadoPor(this);
-						i2.changeHealth(i2.getHealth() - defaultDamageValue);
-						this.health += defaultDamageValue;
-					}
+			// Se intenta darle un orden a los bloqueos, para evitar el deadlock.
+			Immortal bloqueado1;
+			Immortal bloqueado2;
+			// Extraemos los índices de los inmortales que van a pelear.
+			int myIndex = immortalsPopulation.indexOf(this);
+			int hisIndex = immortalsPopulation.indexOf(i2);
+			if (myIndex < hisIndex) {// Si el índice de este inmortal es menor al del índice del inmortal con el que
+				                     // va a pelear, entonces este inmortal bloquea al otro.
+				bloqueado1 = this;
+				bloqueado2 = i2;
+			} else {
+				bloqueado1 = i2;
+				bloqueado2 = this;
+			}
+			synchronized (bloqueado1) {
+				synchronized (bloqueado2) {
+					// Esta es nuestra región crítica, pues se hace el proceso de agregar y quitar vida al mismo tiempo.
+					i2.changeHealth(i2.getHealth() - defaultDamageValue);
+					this.health += defaultDamageValue;
 				}
-				i2.setBloqueadoPor(i2);
-			} 
-			else {
-				synchronized (i2) {
-					synchronized (this) {
-						this.setBloqueadoPor(i2);
-						i2.changeHealth(i2.getHealth() - defaultDamageValue);
-						this.health += defaultDamageValue;
-					}
-				}
-				this.setBloqueadoPor(this);
 			}
 			updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
 		} else {
 			updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
+			//i2.setPause(true);
+			//immortalsPopulation.remove(i2);
 		}
 	}
 
