@@ -1,0 +1,10 @@
+﻿Call/Return Style Basic Concepts(Parallelism and Concurrency)
+//Las imágenes tomadas para este laboratorio están en src/main/resources
+Part 1:
+1. 
+- La razón del consumo de la CPU son las esperas activas que hay en los threads. El sleep dentro del productor 
+disminuye el procesamiento, y es por eso que cuando se ejecuta el consumidor aumenta el consumo, pues este todo el 
+tiempo se encuentra intentando extraer lo que ha hecho el productor, pero como el procesamiento es diferente entre productor
+y consumidor, se queda mucho tiempo esperando (tiempo desperdiciado) a poder extraer algo.
+- La clase responsable del consumo de CPU es la clase "Consumer".
+
