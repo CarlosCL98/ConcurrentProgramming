@@ -8,3 +8,10 @@ tiempo se encuentra intentando extraer lo que ha hecho el productor, pero como e
 y consumidor, se queda mucho tiempo esperando (tiempo desperdiciado) a poder extraer algo.
 - La clase responsable del consumo de CPU es la clase "Consumer".
 
+PART II:
+2.For that case, for N players, what should be that value?
+- El valor de la vida debería ser DEFAULT_IMMORTAL_HEALTH*N.
+3.Is the invariant satisfied?
+- El invariante no es satisfecho, porque cada vez que se da click en pause & check, la vida total de los highlanders varía y debería permanecer constante.
+5.Verify again the functionality clicking many times. Is the invariant satisfied?
+- El invariante sigue sin estar satisfecho, después de haber usado la sincronización al momento de hacer click en pause & check y resume.

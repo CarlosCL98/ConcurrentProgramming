@@ -91,14 +91,16 @@ public class ControlFrame extends JFrame {
                 /*
 				 * COMPLETAR
                  */
+            	for (Immortal im : immortals) {
+                    im.setPause(true);
+                }
+            	
                 int sum = 0;
                 for (Immortal im : immortals) {
                     sum += im.getHealth();
                 }
 
                 statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
-                
-                
 
             }
         });
@@ -111,6 +113,9 @@ public class ControlFrame extends JFrame {
                 /**
                  * IMPLEMENTAR
                  */
+            	for (Immortal im : immortals) {
+                    im.wakeUp();
+                }
 
             }
         });
