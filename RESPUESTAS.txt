@@ -17,4 +17,3 @@ PART II:
 - El invariante sigue sin estar satisfecho, después de haber usado la sincronización al momento de hacer click en pause & check y resume.
 10.
 - Remover a los inmortales cuando se mueren si es una condición de carrera, pues la lista que los contiene se encuentra en cada una de las instancias de los inmortales, y cuando se remueve uno de ellos, las otras listas lo siguen conteniendo, por lo que no todos son notificados del cambio.
-- 

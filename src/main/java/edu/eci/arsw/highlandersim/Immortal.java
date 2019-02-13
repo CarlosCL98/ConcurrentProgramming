@@ -19,8 +19,12 @@ public class Immortal extends Thread {
 	private final Random r = new Random(System.currentTimeMillis());
 
 	private boolean pause;
+	
+	private boolean detener;
 
 	private Immortal bloqueadoPor;
+	
+	private int cuenta;
 
 	public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue,
 			ImmortalUpdateReportCallback ucb) {
@@ -32,11 +36,16 @@ public class Immortal extends Thread {
 		this.defaultDamageValue = defaultDamageValue;
 		this.pause = false;
 		this.bloqueadoPor = this;
+		this.detener = false;
+		this.cuenta = 0;
 	}
 
 	public void run() {
 
-		while (true) {
+		while (!detener) {
+			if (health <= 0) {
+				break;
+			}
 			if (pause) {
 				synchronized (this) {
 					try {
@@ -58,9 +67,9 @@ public class Immortal extends Thread {
 			}
 
 			im = immortalsPopulation.get(nextFighterIndex);
-
+			
 			this.fight(im);
-
+			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -79,8 +88,7 @@ public class Immortal extends Thread {
 			// Extraemos los índices de los inmortales que van a pelear.
 			int myIndex = immortalsPopulation.indexOf(this);
 			int hisIndex = immortalsPopulation.indexOf(i2);
-			if (myIndex < hisIndex) {// Si el índice de este inmortal es menor al del índice del inmortal con el que
-				                     // va a pelear, entonces este inmortal bloquea al otro.
+			if (myIndex < hisIndex) {// Si el índice de este inmortal es menor al del índice del inmortal con el que va a pelear, entonces este inmortal bloquea al otro.
 				bloqueado1 = this;
 				bloqueado2 = i2;
 			} else {
@@ -96,10 +104,19 @@ public class Immortal extends Thread {
 			}
 			updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
 		} else {
-			updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
-			//i2.setPause(true);
-			//immortalsPopulation.remove(i2);
+			if (i2.getCuenta() < 1) {
+				updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
+			}
+			i2.setCuenta();
 		}
+	}
+	
+	public int getCuenta() {
+		return cuenta;
+	}
+	
+	public void setCuenta() {
+		this.cuenta = this.cuenta + 1;
 	}
 
 	public void changeHealth(int v) {
@@ -123,6 +140,10 @@ public class Immortal extends Thread {
 		synchronized (this) {
 			this.notifyAll();
 		}
+	}
+	
+	public void detener() {
+		detener = true;
 	}
 
 	@Override
